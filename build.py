@@ -31,9 +31,9 @@ home = f'''<main id="main"><section class="cover"><picture><source media="(max-w
 (OUT / "index.html").write_text(frame(home,title,True))
 for i, (num, body) in enumerate(sections,1):
     ps = [p.strip() for p in body.strip().split("\n\n") if p.strip()]
-    article = ''.join('<p>'+escape(p).replace('**（完）**','<strong>（完）</strong>').replace('\n','<br>')+'</p>' for p in ps)
+    article = ''.join('<p>'+re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', escape(p)).replace('\n','<br>')+'</p>' for p in ps)
     back = f'<a href="{url(i-1)}">← 上一节</a>' if i>1 else '<a href="index.html">← 封面</a>'
-    forward = f'<a href="{url(i+1)}"><small>下一节　→</small>{labels[i]}</a>' if i<21 else '<a href="index.html"><small>全书完　↺</small>返回封面</a>'
+    forward = f'<a href="{url(i+1)}"><small>下一节　→</small>{labels[i]}</a>' if i<21 else '<a href="index.html">↺ 返回封面</a>'
     sidebar = ''.join(f'<li><a {"aria-current=page" if j==i else ""} href="{url(j)}"><span>{j:02}</span> {s}</a></li>' for j,s in enumerate(labels,1))
     reader = f'''<main id="main" class="reader wrap"><aside><div class="eyebrow"><i></i> 章节索引</div><ol>{sidebar}</ol></aside>
 <div class="leaf"><div class="eyebrow"><i></i> CHAPTER　{i:02} <b>/</b> 21</div><h1>第{num}节<span> · </span>{labels[i-1]}</h1><div class="hair"></div><article>{article}</article>
